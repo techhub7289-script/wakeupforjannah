@@ -815,14 +815,36 @@ async function generateDua() {
 }
 
 // EMAIL
-function subscribeEmail() {
+async function subscribeEmail() {
   const email = document.getElementById('emailInput').value;
   if (!email || !email.includes('@')) {
     alert('Entre une adresse email valide.');
     return;
   }
-  document.getElementById('emailSuccess').classList.add('visible');
-  document.getElementById('emailInput').value = '';
+
+  const btn = document.querySelector('.email-submit');
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  try {
+    const response = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    if (response.ok) {
+      document.getElementById('emailSuccess').classList.add('visible');
+      document.getElementById('emailInput').value = '';
+    } else {
+      alert('Une erreur est survenue. Réessaie.');
+    }
+  } catch (err) {
+    alert('Une erreur est survenue. Réessaie.');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Rejoindre';
 }
 </script>
 </body>
